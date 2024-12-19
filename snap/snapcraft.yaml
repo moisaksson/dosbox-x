@@ -1,5 +1,6 @@
 name: dosbox-x
 adopt-info: dosbox-x
+version: 2024.10.01
 base: core22
 
 architectures:
@@ -50,6 +51,7 @@ parts:
     parse-info: [usr/share/metainfo/com.dosbox_x.DOSBox-X.metainfo.xml]
     source-type: git
     source: https://github.com/joncampbell123/dosbox-x.git
+    source-tag: dosbox-x-v$SNAPCRAFT_PROJECT_VERSION
     autotools-configure-parameters:
       - --prefix=/usr
       - --enable-debug=heavy
@@ -57,18 +59,6 @@ parts:
     build-environment:
       - LD_LIBRARY_PATH: ${CRAFT_STAGE}/usr/lib
     override-build: |
-        # There is no pattern in the release tags for DosBox-X
-        # This should resolve to a version or datestamp or both.
-        last_committed_tag="$(git describe --tags --abbrev=0)"
-        last_committed_tag_ver="$(echo ${last_committed_tag} | sed -e 's/dosbox-x-//' -e 's/wip-//' -e 's/windows-//' -e 's/v//')"
-        last_released_tag="$(snap info dosbox-x | awk '$1 == "latest/beta:" { print $2 }')"
-        # If the latest tag from the upstream project has not been released to
-        # beta, build that tag instead of master.
-        if [ "${last_committed_tag_ver}" != "${last_released_tag}" ]; then
-          git fetch
-          git checkout "${last_committed_tag}"
-        fi
-
         snapcraftctl build
 
         # never fail on the next line (use `|| true` to ignore errors)
