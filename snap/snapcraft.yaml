@@ -1,6 +1,6 @@
 name: dosbox-x
 adopt-info: dosbox-x
-version: 2024.12.04
+version: 2025.01.01
 base: core22
 
 architectures:
